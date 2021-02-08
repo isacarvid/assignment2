@@ -39,9 +39,16 @@ public class CIServer extends AbstractHandler
     // used to start the CI server in command line
     public static void main(String[] args) throws Exception
     {
-        Server server = new Server(8080);
+        Server server = new Server(8095);
         server.setHandler(new CIServer());
         server.start();
         server.join();
     }
+
+	@Override
+	public void handle(String target, Request baseRequest, jakarta.servlet.http.HttpServletRequest request,
+			jakarta.servlet.http.HttpServletResponse response) throws IOException, jakarta.servlet.ServletException {
+		// TODO Auto-generated method stub
+		
+	}
 }
