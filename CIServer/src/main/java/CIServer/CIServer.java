@@ -13,6 +13,8 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 
+
+
 /**
  Skeleton of a ContinuousIntegrationServer which acts as webhook
  See the Jetty documentation for API documentation of those classes.
@@ -39,25 +41,20 @@ public class CIServer extends AbstractHandler
         baseRequest.setHandled(true);
         
         String body = getBody(request);
-        
         System.out.println(body);
         //body = parseJSON(body);
-        
-        
         System.out.println( "\n" + baseRequest + "\n" + response);
 
         // here you do all the continuous integration tasks
         // for example
         // 1st clone your repository
         // 2nd compile the code
-
         response.getWriter().println("CI job done");
 		
 	}
 
 
 	private String parseJSON(String body) {
-		
 		return null;
 	}
 
