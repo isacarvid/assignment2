@@ -30,8 +30,7 @@ public class CIServer extends AbstractHandler
         server.join();
     }
 
-    
-    
+        
 	@Override
 	public void handle(String target, Request baseRequest, jakarta.servlet.http.HttpServletRequest request,
 			jakarta.servlet.http.HttpServletResponse response) throws IOException, jakarta.servlet.ServletException {
