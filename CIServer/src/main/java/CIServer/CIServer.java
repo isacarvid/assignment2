@@ -32,9 +32,11 @@ public class CIServer extends AbstractHandler
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
-
-        
-        System.out.println(request.getReader().read());
+        String body = "";
+        while(!request.getReader().readLine().isEmpty()) {
+        	body += request.getReader().readLine();
+        }
+        System.out.println(body);
         System.out.println( "\n" + baseRequest + "\n" + response);
 
         // here you do all the continuous integration tasks
