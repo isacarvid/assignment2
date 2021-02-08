@@ -16,25 +16,6 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 
 public class CIServer extends AbstractHandler
 {
-    public void handle(String target,
-                       Request baseRequest,
-                       HttpServletRequest request,
-                       HttpServletResponse response)
-        throws IOException, ServletException
-    {
-        response.setContentType("text/html;charset=utf-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-        baseRequest.setHandled(true);
-
-        System.out.println(target);
-
-        // here you do all the continuous integration tasks
-        // for example
-        // 1st clone your repository
-        // 2nd compile the code
-
-        response.getWriter().println("CI job done");
-    }
 
     // used to start the CI server in command line
     public static void main(String[] args) throws Exception
@@ -48,7 +29,21 @@ public class CIServer extends AbstractHandler
 	@Override
 	public void handle(String target, Request baseRequest, jakarta.servlet.http.HttpServletRequest request,
 			jakarta.servlet.http.HttpServletResponse response) throws IOException, jakarta.servlet.ServletException {
-		// TODO Auto-generated method stub
+        response.setContentType("text/html;charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        baseRequest.setHandled(true);
+
+        
+        System.out.println(target);
+
+        // here you do all the continuous integration tasks
+        // for example
+        // 1st clone your repository
+        // 2nd compile the code
+
+        response.getWriter().println("CI job done");
 		
 	}
+
+
 }
