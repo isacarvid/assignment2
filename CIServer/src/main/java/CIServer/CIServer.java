@@ -38,6 +38,7 @@ public class CIServer extends AbstractHandler
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
+        
         String body = getBody(request);
         
         System.out.println(body);
@@ -60,7 +61,6 @@ public class CIServer extends AbstractHandler
 		
 		return null;
 	}
-
 
 	private String getBody(jakarta.servlet.http.HttpServletRequest request) throws IOException {
 		String body;
