@@ -34,8 +34,8 @@ public class CIServer extends AbstractHandler
         baseRequest.setHandled(true);
 
         
-        
-        System.out.println(request + "\n" + baseRequest + "\n" + response);
+        System.out.println(request.getReader().read());
+        System.out.println( "\n" + baseRequest + "\n" + response);
 
         // here you do all the continuous integration tasks
         // for example
