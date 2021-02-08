@@ -3,11 +3,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+
+import jdk.nashorn.internal.parser.JSONParser;
 
 /**
  Skeleton of a ContinuousIntegrationServer which acts as webhook
@@ -33,11 +38,12 @@ public class CIServer extends AbstractHandler
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
-        String body = "";
-        while(!request.getReader().readLine().isEmpty()) {
-        	body += request.getReader().readLine();
-        }
+        String body = getBody(request);
+        
         System.out.println(body);
+        //body = parseJSON(body);
+        
+        
         System.out.println( "\n" + baseRequest + "\n" + response);
 
         // here you do all the continuous integration tasks
@@ -47,6 +53,34 @@ public class CIServer extends AbstractHandler
 
         response.getWriter().println("CI job done");
 		
+	}
+
+
+	private String parseJSON(String body) {
+		
+		return null;
+	}
+
+
+	private String getBody(jakarta.servlet.http.HttpServletRequest request) throws IOException {
+		String body;
+		StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader bufferedReader = null;
+        InputStream inputStream = request.getInputStream();
+        if (inputStream != null) {
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            char[] charBuffer = new char[128];
+            int bytesRead = -1;
+            while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+                stringBuilder.append(charBuffer, 0, bytesRead);
+            }
+        } else {
+            stringBuilder.append("");
+        }
+        bufferedReader.close();
+        body = stringBuilder.toString();
+        
+        return body;
 	}
 
 
