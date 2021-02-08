@@ -12,7 +12,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import jdk.nashorn.internal.parser.JSONParser;
 
 /**
  Skeleton of a ContinuousIntegrationServer which acts as webhook
@@ -31,6 +30,7 @@ public class CIServer extends AbstractHandler
         server.join();
     }
 
+    
     
 	@Override
 	public void handle(String target, Request baseRequest, jakarta.servlet.http.HttpServletRequest request,
