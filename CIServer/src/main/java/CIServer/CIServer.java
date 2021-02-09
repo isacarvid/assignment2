@@ -46,6 +46,7 @@ public class CIServer extends AbstractHandler {
 			String emailAddress = json.getJSONArray("commits").getJSONObject(0).getJSONObject("committer").getString("email");
 			System.out.println("********** " + url);
 		}
+		
 		// body = parseJSON(body);
 		System.out.println("\n" + baseRequest + "\n" + response);
 
