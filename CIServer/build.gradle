@@ -25,7 +25,7 @@ dependencies {
     implementation 'com.google.guava:guava:28.2-jre'
 	// https://mvnrepository.com/artifact/org.json/json
 	
-compile group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
+	implementation 'org.json:json:20171018'
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
     
