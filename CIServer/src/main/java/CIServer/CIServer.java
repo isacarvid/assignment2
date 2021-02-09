@@ -18,6 +18,8 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.json.JSONObject;
 
+import models.WebhookRequest;
+
 /**
  * Skeleton of a ContinuousIntegrationServer which acts as webhook See the Jetty
  * documentation for API documentation of those classes.
@@ -39,13 +41,14 @@ public class CIServer extends AbstractHandler {
 		response.setContentType("text/html;charset=utf-8");
 		response.setStatus(HttpServletResponse.SC_OK);
 		baseRequest.setHandled(true);
+		
 		if (request.getMethod() == "POST") {
 			String body = getBody(request);
-			JSONObject json = new JSONObject(body);
-			String url = json.getJSONObject("repository").getString("svn_url");
-			String branch = json.getString("ref").substring(10);
-			String emailAddress = json.getJSONArray("commits").getJSONObject(0).getJSONObject("committer").getString("email");
-			System.out.println("********** " + url);
+			try {
+				WebhookRequest webhookRequest = new WebhookRequest(new JSONObject(body));
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
 		}
 		
 		// body = parseJSON(body);
@@ -58,11 +61,6 @@ public class CIServer extends AbstractHandler {
 		response.getWriter().println("CI job done");
 	}
 
-	
-	private JSONObject parseJSON(String body) {
-		JSONObject json = new JSONObject(body);
-		return json;
-	}
 
 	private String getBody(jakarta.servlet.http.HttpServletRequest request) throws IOException {
 		String body;
