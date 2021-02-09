@@ -54,6 +54,7 @@ public class CIServer extends AbstractHandler
 
     }
 
+    
 
     private JSONObject parseJSON(String body) {
     	JSONObject json = new JSONObject(body);
