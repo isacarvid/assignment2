@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.json.JSONObject;
