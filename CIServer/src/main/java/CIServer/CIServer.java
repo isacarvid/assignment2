@@ -54,6 +54,7 @@ public class CIServer extends AbstractHandler {
 		response.getWriter().println("CI job done");
 	}
 
+	
 	private JSONObject parseJSON(String body) {
 		JSONObject json = new JSONObject(body);
 		return json;
