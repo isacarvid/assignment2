@@ -51,7 +51,6 @@ public class CIServer extends AbstractHandler {
 		// 1st clone your repository
 		// 2nd compile the code
 		response.getWriter().println("CI job done");
-
 	}
 
 	private JSONObject parseJSON(String body) {
