@@ -41,7 +41,9 @@ public class CIServer extends AbstractHandler {
 		if (request.getMethod() == "POST") {
 			String body = getBody(request);
 			JSONObject json = new JSONObject(body);
-			String url = json.getJSONObject("issue").getString("url");
+			String url = json.getJSONObject("repository").getString("svn_url");
+			String branch = json.getJSONObject("repository").getString("svn_url");
+			String emailAddress = json.getJSONArray("commits").getJSONObject(0).getJSONObject("committer").getString("email");
 			System.out.println("********** " + url);
 		}
 		// body = parseJSON(body);
