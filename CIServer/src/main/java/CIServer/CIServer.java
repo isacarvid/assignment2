@@ -30,8 +30,7 @@ import models.WebhookRequest;
 public class CIServer extends AbstractHandler {
 	private ProcessBuilder processBuilder = new ProcessBuilder();
 
-	// used to start the CI server in command line
-	public static void main(String[] args) throws Exception {
+	public void startServer() throws Exception {
 		Server server = new Server(8095);
 		server.setHandler(new CIServer());
 		server.start();
@@ -45,14 +44,17 @@ public class CIServer extends AbstractHandler {
 		response.setContentType("text/html;charset=utf-8");
 		response.setStatus(HttpServletResponse.SC_OK);
 		baseRequest.setHandled(true);
-		
+		WebhookRequest webhookRequest = null;
 		if (request.getMethod() == "POST") {
 			String body = getBody(request);
 			try {
-				WebhookRequest webhookRequest = new WebhookRequest(new JSONObject(body));
+				webhookRequest = new WebhookRequest(new JSONObject(body));
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
+			
+			var status = compileRepo(webhookRequest);
+			System.out.println(webhookRequest.getEmailAddress());
 		}
 		
 		// body = parseJSON(body);
@@ -71,7 +73,7 @@ public class CIServer extends AbstractHandler {
 	 * saves output from build in buildStatus
 	 * @return success state
 	 * */
-	public boolean compileRepo(WebhookRequest webhook) {
+	public BuildStatus compileRepo(WebhookRequest webhook) {
 		BuildStatus buildStatus = new BuildStatus();
 
 		processBuilder.directory(new File("../../"));
@@ -82,24 +84,26 @@ public class CIServer extends AbstractHandler {
 		processBuilder.command("git", "clone", webhook.getRepoAddress());
 		buildStatus.setCloneStatus(runProcess());
 		
-		processBuilder.directory(new File("../../temp/assignment2"));
+		processBuilder.directory(new File("../../temp/" + webhook.getRepoName()));
 		processBuilder.command("git", "checkout", webhook.getBranchName());
 		runProcess();
 		
-		processBuilder.directory(new File("../../temp/assignment2/CIServer"));
+		processBuilder.directory(new File("../../temp/"+webhook.getRepoName()+"/CIServer"));
 		processBuilder.command("./gradlew", "build");
 		buildStatus.setBuildStatus(runProcess());
 		
-		processBuilder.directory(new File("../../temp/assignment2/CIServer"));
-		processBuilder.command("./gradlew", "temp");
+		processBuilder.directory(new File("../../temp/"+webhook.getRepoName()+"/CIServer"));
+		processBuilder.command("./gradlew", "test");
 		buildStatus.setTestStatus(runProcess());
 		
 		processBuilder.directory(new File("../../"));
 		processBuilder.command("rm", "-rf", "temp");
 		runProcess();
 		
-		buildStatus.checkSuccess();
-		return buildStatus.isSuccess();
+		buildStatus.setSuccessBuild();
+		buildStatus.setSuccessTest();
+
+		return buildStatus;
 	}
 	
 	private String runProcess() {

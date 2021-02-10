@@ -29,24 +29,38 @@ public class BuildStatus {
 
 	private String buildStatus;
 	private String testStatus;
-	boolean success;
+	boolean successBuild;
+	boolean successTest;
 
 	/**
 	 * Check in build and test status if successful
 	 */
-	public void checkSuccess() {
+	public void setSuccessBuild() {
 		if (cloneStatus.isEmpty() || testStatus.isEmpty() || buildStatus.isEmpty()) {
-			success = false;
+			successBuild = false;
 		}
-		if (testStatus.contains("BUILD SUCCESSFUL") && buildStatus.contains("BUILD SUCCESSFUL")) {
-			success = true;
+		if (buildStatus.contains("BUILD SUCCESSFUL")) {
+			successBuild = true;
 		} else {
-			success = false;
+			successBuild = false;
 		}
 	}
 
-	public boolean isSuccess() {
-		return success;
+	public void setSuccessTest() {
+		if (cloneStatus.isEmpty() || testStatus.isEmpty() || buildStatus.isEmpty()) {
+			successTest = false;
+		}
+		if (testStatus.contains("BUILD SUCCESSFUL") ) {
+			successTest = true;
+		} else {
+			successTest = false;
+		}
+	}
+	public boolean isSuccessBuild() {
+		return successBuild;
+	}
+	public boolean isSuccessTest() {
+		return successTest;
 	}
 
 }
