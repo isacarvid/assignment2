@@ -32,4 +32,10 @@ public class TestCI {
 			assertTrue(true);
 		}
 	}
+	
+	@Test
+	public void testCompileRepo() {
+		CIServer server = new CIServer();
+		server.compileRepo();
+	}
 }

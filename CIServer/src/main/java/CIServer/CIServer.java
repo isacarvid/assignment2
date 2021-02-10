@@ -26,6 +26,8 @@ import models.WebhookRequest;
  */
 
 public class CIServer extends AbstractHandler {
+	private ProcessBuilder processBuilder = new ProcessBuilder();
+
 	// used to start the CI server in command line
 	public static void main(String[] args) throws Exception {
 		Server server = new Server(8095);
@@ -61,7 +63,51 @@ public class CIServer extends AbstractHandler {
 		response.getWriter().println("CI job done");
 	}
 
+	public boolean compileRepo() {
+		String repo = "https://github.com/isacarvid/assignment2";
+		processBuilder.command("mkdir", "../../test");
+		//Process process = Runtime.getRuntime().exec({"mkdir","/Users/isacarvidsson/Desktop/kth/proggrund/assignment2/CIServer/test"});
+		runProcess();
 
+		
+		processBuilder.command("git", "clone", repo, "../../test");
+		runProcess();
+		
+		return false;
+	}
+	
+	private boolean runProcess() {
+	    try {
+
+	        Process process = processBuilder.start();
+
+	        StringBuilder output = new StringBuilder();
+
+	        BufferedReader reader = new BufferedReader(
+	                new InputStreamReader(process.getInputStream()));
+
+	        String line;
+	        while ((line = reader.readLine()) != null) {
+	            output.append(line + "\n");
+	        }
+
+	        int exitVal = process.waitFor();
+	        if (exitVal == 0) {
+	            System.out.println(output);
+	            process.destroy();
+	            return true;
+	        } else {
+	        	process.destroy();
+	            return false;
+	        }
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } catch (InterruptedException e) {
+	        e.printStackTrace();
+	    }
+		return false;
+	}
 	private String getBody(jakarta.servlet.http.HttpServletRequest request) throws IOException {
 		String body;
 		StringBuilder stringBuilder = new StringBuilder();
