@@ -35,7 +35,5 @@ public class TestCI {
 	
 	@Test
 	public void testCompileRepo() {
-		CIServer server = new CIServer();
-		server.compileRepo();
 	}
 }

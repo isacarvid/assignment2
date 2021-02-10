@@ -8,6 +8,7 @@ import java.lang.Object;
 import java.util.Properties;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,6 +19,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.json.JSONObject;
 
+import models.BuildStatus;
 import models.WebhookRequest;
 
 /**
@@ -62,27 +64,49 @@ public class CIServer extends AbstractHandler {
 		// 2nd compile the code
 		response.getWriter().println("CI job done");
 	}
+	
+	/**
+	 * clones directory from remote into temp dir.
+	 * runs gradle build and test.
+	 * saves output from build in buildStatus
+	 * @return success state
+	 * */
+	public boolean compileRepo(WebhookRequest webhook) {
+		BuildStatus buildStatus = new BuildStatus();
 
-	public boolean compileRepo() {
-		String repo = "https://github.com/isacarvid/assignment2";
-		processBuilder.command("mkdir", "../../test");
-		//Process process = Runtime.getRuntime().exec({"mkdir","/Users/isacarvidsson/Desktop/kth/proggrund/assignment2/CIServer/test"});
-		runProcess();
-
-		
-		processBuilder.command("git", "clone", repo, "../../test");
+		processBuilder.directory(new File("../../"));
+		processBuilder.command("mkdir", "temp");
 		runProcess();
 		
-		return false;
+		processBuilder.directory(new File("../../temp"));
+		processBuilder.command("git", "clone", webhook.getRepoAddress());
+		buildStatus.setCloneStatus(runProcess());
+		
+		processBuilder.directory(new File("../../temp/assignment2"));
+		processBuilder.command("git", "checkout", webhook.getBranchName());
+		runProcess();
+		
+		processBuilder.directory(new File("../../temp/assignment2/CIServer"));
+		processBuilder.command("./gradlew", "build");
+		buildStatus.setBuildStatus(runProcess());
+		
+		processBuilder.directory(new File("../../temp/assignment2/CIServer"));
+		processBuilder.command("./gradlew", "temp");
+		buildStatus.setTestStatus(runProcess());
+		
+		processBuilder.directory(new File("../../"));
+		processBuilder.command("rm", "-rf", "temp");
+		runProcess();
+		
+		buildStatus.checkSuccess();
+		return buildStatus.isSuccess();
 	}
 	
-	private boolean runProcess() {
+	private String runProcess() {
 	    try {
 
-	        Process process = processBuilder.start();
-
+			Process process = processBuilder.start();
 	        StringBuilder output = new StringBuilder();
-
 	        BufferedReader reader = new BufferedReader(
 	                new InputStreamReader(process.getInputStream()));
 
@@ -95,10 +119,10 @@ public class CIServer extends AbstractHandler {
 	        if (exitVal == 0) {
 	            System.out.println(output);
 	            process.destroy();
-	            return true;
+	            return output.toString();
 	        } else {
 	        	process.destroy();
-	            return false;
+	            return output.toString();
 	        }
 
 	    } catch (IOException e) {
@@ -106,7 +130,7 @@ public class CIServer extends AbstractHandler {
 	    } catch (InterruptedException e) {
 	        e.printStackTrace();
 	    }
-		return false;
+		return "";
 	}
 	private String getBody(jakarta.servlet.http.HttpServletRequest request) throws IOException {
 		String body;
