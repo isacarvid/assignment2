@@ -21,6 +21,19 @@ public class TestCI {
 	 * Checking if a json object parses correctly
 	 * If not all json parameters are available throw exception 
 	 * */
+	@Test
+	public void testCompileRepo() {
+		WebhookRequest webhookRequest = null;
+		try {
+			webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"https://github.com/isacarvid/assignment1\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}}], \"ref\":\"/ref/heads/main\"}"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//CIServer server = new CIServer();
+		//assertTrue(server.compileRepo(webhookRequest).isSuccessBuild());
+	}
+
+
     @Test
     public void testWebhookRequest() {
       WebhookRequest webhookRequest = null;
@@ -74,3 +87,4 @@ public class TestCI {
         assertTrue(returnedBody.equals(body));
     }
 }
+
