@@ -7,7 +7,11 @@ public class WebhookRequest {
 	private String branchName;
 	private String repoAddress;
 	private String repoName;
-	
+	private String commitMessage;
+	public String getCommitMessage() {
+		return commitMessage;
+	}
+
 	public String getRepoName() {
 		return repoName;
 	}
@@ -19,6 +23,7 @@ public class WebhookRequest {
 			this.emailAddress = request.getJSONArray("commits").getJSONObject(0).getJSONObject("committer")
 					.getString("email");
 			this.repoName = getRepoName(repoAddress);
+			this.commitMessage = request.getJSONArray("commits").getJSONObject(0).getString("message");
 		} else {
 			throw new Exception("webhook request is malformed");
 		}

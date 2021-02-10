@@ -62,7 +62,12 @@ public class CIServer extends AbstractHandler {
 			} 
 			
 			var status = compileRepo(webhookRequest);
-			System.out.println(webhookRequest.getEmailAddress());
+			String emailBody = createBody("isac.arvidsson97@gmail.com", webhookRequest.getBranchName(), webhookRequest.getCommitMessage(),status.isSuccessBuild(), status.isSuccessTest());
+			try {
+				sendEmail("isac.arvidsson97@gmail.com", "test on branch: " + webhookRequest.getBranchName(), emailBody);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		// body = parseJSON(body);
@@ -170,9 +175,9 @@ public class CIServer extends AbstractHandler {
      * It contains:
      * branch, commit message & version, if the code compiles, if the tests work
      */
-    public String createBody(String to, String branch, String commitMessage, String version, boolean compiles, boolean tests) {
+    public String createBody(String to, String branch, String commitMessage, boolean compiles, boolean tests) {
         String body = "Hello" + " " + to + ". " + "Your commit " + commitMessage +
-                " " + version + " on branch " + branch + " has ";
+                 " on branch " + branch + " has ";
         if(compiles && tests) {
             body += "succeeded. The code has compiled and the tests pass.";
         }

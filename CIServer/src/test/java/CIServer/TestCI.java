@@ -67,23 +67,23 @@ public class TestCI {
         CIServer server = new CIServer();
 
         String returnedBody = server.createBody(
-                "eva.despinoy@gmail.com", "branchname", "commitMessage message", "version v1", true, true);
-        String body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message" + " " + "version v1" + " on branch " + "branchname" + " has " + "succeeded. The code has compiled and the tests pass.";
+                "eva.despinoy@gmail.com", "branchname", "commitMessage message",  true, true);
+        String body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message" + " on branch " + "branchname" + " has " + "succeeded. The code has compiled and the tests pass.";
         assertTrue(returnedBody.equals(body));
 
         returnedBody = server.createBody(
-                "eva.despinoy@gmail.com", "branchname", "commitMessage message", "version v1", false, false);
-        body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message" + " " + "version v1" + " on branch " + "branchname" + " has " + "failed. The code does not compile.";
+                "eva.despinoy@gmail.com", "branchname", "commitMessage message",  false, false);
+        body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message" + " on branch " + "branchname" + " has " + "failed. The code does not compile.";
         assertTrue(returnedBody.equals(body));
 
         returnedBody = server.createBody(
-                "eva.despinoy@gmail.com", "branchname", "commitMessage message", "version v1", false, true);
-        body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message" + " " + "version v1" + " on branch " + "branchname" + " has " + "failed. The code does not compile.";
+                "eva.despinoy@gmail.com", "branchname", "commitMessage message",  false, true);
+        body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message" + " on branch " + "branchname" + " has " + "failed. The code does not compile.";
         assertTrue(returnedBody.equals(body));
 
         returnedBody = server.createBody(
-                "eva.despinoy@gmail.com", "branchname", "commitMessage message", "version v1", true, false);
-        body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message" + " " + "version v1" + " on branch " + "branchname" + " has " + "failed. The code compiles but the tests fail.";
+                "eva.despinoy@gmail.com", "branchname", "commitMessage message", true, false);
+        body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message"  + " on branch " + "branchname" + " has " + "failed. The code compiles but the tests fail.";
         assertTrue(returnedBody.equals(body));
     }
 }
