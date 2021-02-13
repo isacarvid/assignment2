@@ -6,6 +6,15 @@ public class WebhookRequest {
 	private String emailAddress;
 	private String branchName;
 	private String repoAddress;
+	private String repoName;
+	private String commitMessage;
+	public String getCommitMessage() {
+		return commitMessage;
+	}
+
+	public String getRepoName() {
+		return repoName;
+	}
 
 	public WebhookRequest(JSONObject request) throws Exception {
 		if (request.has("repository") && request.has("commits") && request.has("ref")) {
@@ -13,10 +22,23 @@ public class WebhookRequest {
 			this.branchName = request.getString("ref").substring(11);
 			this.emailAddress = request.getJSONArray("commits").getJSONObject(0).getJSONObject("committer")
 					.getString("email");
+			this.repoName = getRepoName(repoAddress);
+			this.commitMessage = request.getJSONArray("commits").getJSONObject(0).getString("message");
 		} else {
 			throw new Exception("webhook request is malformed");
 		}
 
+	}
+
+	private String getRepoName(String repoAddress2) {
+		StringBuilder stringBuilder = new StringBuilder();
+		for(int i = 0 ; i < repoAddress2.length(); i++) {
+			stringBuilder.append(repoAddress2.charAt(i));
+			if(repoAddress2.charAt(i) == '/') {
+				stringBuilder.delete(0, stringBuilder.length()-1);
+			}
+		}
+		return stringBuilder.toString();
 	}
 
 	public String getEmailAddress() {

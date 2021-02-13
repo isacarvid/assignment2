@@ -39,14 +39,13 @@ import models.WebhookRequest;
 public class CIServer extends AbstractHandler {
 	private ProcessBuilder processBuilder = new ProcessBuilder();
 
-	// used to start the CI server in command line
-	public static void main(String[] args) throws Exception {
+	public void startServer() throws Exception {
 		Server server = new Server(8095);
 		server.setHandler(new CIServer());
 		server.start();
 		server.join();
 	}
-
+	
 	
 	@Override
 	public void handle(String target, Request baseRequest, jakarta.servlet.http.HttpServletRequest request,
@@ -54,14 +53,23 @@ public class CIServer extends AbstractHandler {
 		response.setContentType("text/html;charset=utf-8");
 		response.setStatus(HttpServletResponse.SC_OK);
 		baseRequest.setHandled(true);
-		
+		WebhookRequest webhookRequest = null;
 		if (request.getMethod() == "POST") {
 			String body = getBody(request);
 			try {
-				WebhookRequest webhookRequest = new WebhookRequest(new JSONObject(body));
+				webhookRequest = new WebhookRequest(new JSONObject(body));
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
+			
+			
+			var status = compileRepo(webhookRequest);
+			String emailBody = createBody("isac.arvidsson97@gmail.com", webhookRequest.getBranchName(), webhookRequest.getCommitMessage(),status.isSuccessBuild(), status.isSuccessTest());
+			try {
+				sendEmail("isac.arvidsson97@gmail.com", "test on branch: " + webhookRequest.getBranchName(), emailBody);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		// body = parseJSON(body);
@@ -80,7 +88,7 @@ public class CIServer extends AbstractHandler {
 	 * saves output from build in buildStatus
 	 * @return success state
 	 * */
-	public boolean compileRepo(WebhookRequest webhook) {
+	public BuildStatus compileRepo(WebhookRequest webhook) {
 		BuildStatus buildStatus = new BuildStatus();
 
 		processBuilder.directory(new File("../../"));
@@ -91,24 +99,26 @@ public class CIServer extends AbstractHandler {
 		processBuilder.command("git", "clone", webhook.getRepoAddress());
 		buildStatus.setCloneStatus(runProcess());
 		
-		processBuilder.directory(new File("../../temp/assignment2"));
+		processBuilder.directory(new File("../../temp/" + webhook.getRepoName()));
 		processBuilder.command("git", "checkout", webhook.getBranchName());
 		runProcess();
 		
-		processBuilder.directory(new File("../../temp/assignment2/CIServer"));
+		processBuilder.directory(new File("../../temp/"+webhook.getRepoName()+"/CIServer"));
 		processBuilder.command("./gradlew", "build");
 		buildStatus.setBuildStatus(runProcess());
 		
-		processBuilder.directory(new File("../../temp/assignment2/CIServer"));
-		processBuilder.command("./gradlew", "temp");
+		processBuilder.directory(new File("../../temp/"+webhook.getRepoName()+"/CIServer"));
+		processBuilder.command("./gradlew", "test");
 		buildStatus.setTestStatus(runProcess());
 		
 		processBuilder.directory(new File("../../"));
 		processBuilder.command("rm", "-rf", "temp");
 		runProcess();
 		
-		buildStatus.checkSuccess();
-		return buildStatus.isSuccess();
+		buildStatus.setSuccessBuild();
+		buildStatus.setSuccessTest();
+
+		return buildStatus;
 	}
 	
 	private String runProcess() {
@@ -167,9 +177,9 @@ public class CIServer extends AbstractHandler {
      * It contains:
      * branch, commit message & version, if the code compiles, if the tests work
      */
-    public String createBody(String to, String branch, String commitMessage, String version, boolean compiles, boolean tests) {
+    public String createBody(String to, String branch, String commitMessage, boolean compiles, boolean tests) {
         String body = "Hello" + " " + to + ". " + "Your commit " + commitMessage +
-                " " + version + " on branch " + branch + " has ";
+                 " on branch " + branch + " has ";
         if(compiles && tests) {
             body += "succeeded. The code has compiled and the tests pass.";
         }
