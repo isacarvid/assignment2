@@ -39,8 +39,8 @@ import models.WebhookRequest;
 public class CIServer extends AbstractHandler {
 	private ProcessBuilder processBuilder = new ProcessBuilder();
 
-	public void startServer() throws Exception {
-		Server server = new Server(8095);
+	public void startServer(int port) throws Exception {
+		Server server = new Server(port);
 		server.setHandler(new CIServer());
 		server.start();
 		server.join();
