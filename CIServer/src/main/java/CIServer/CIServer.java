@@ -17,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,6 +28,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.json.JSONObject;
 
+import models.BuildStatus;
 import models.WebhookRequest;
 
 /**
@@ -35,6 +37,8 @@ import models.WebhookRequest;
  */
 
 public class CIServer extends AbstractHandler {
+	private ProcessBuilder processBuilder = new ProcessBuilder();
+
 	// used to start the CI server in command line
 	public static void main(String[] args) throws Exception {
 		Server server = new Server(8095);
@@ -69,8 +73,74 @@ public class CIServer extends AbstractHandler {
 		// 2nd compile the code
 		response.getWriter().println("CI job done");
 	}
+	
+	/**
+	 * clones directory from remote into temp dir.
+	 * runs gradle build and test.
+	 * saves output from build in buildStatus
+	 * @return success state
+	 * */
+	public boolean compileRepo(WebhookRequest webhook) {
+		BuildStatus buildStatus = new BuildStatus();
 
+		processBuilder.directory(new File("../../"));
+		processBuilder.command("mkdir", "temp");
+		runProcess();
+		
+		processBuilder.directory(new File("../../temp"));
+		processBuilder.command("git", "clone", webhook.getRepoAddress());
+		buildStatus.setCloneStatus(runProcess());
+		
+		processBuilder.directory(new File("../../temp/assignment2"));
+		processBuilder.command("git", "checkout", webhook.getBranchName());
+		runProcess();
+		
+		processBuilder.directory(new File("../../temp/assignment2/CIServer"));
+		processBuilder.command("./gradlew", "build");
+		buildStatus.setBuildStatus(runProcess());
+		
+		processBuilder.directory(new File("../../temp/assignment2/CIServer"));
+		processBuilder.command("./gradlew", "temp");
+		buildStatus.setTestStatus(runProcess());
+		
+		processBuilder.directory(new File("../../"));
+		processBuilder.command("rm", "-rf", "temp");
+		runProcess();
+		
+		buildStatus.checkSuccess();
+		return buildStatus.isSuccess();
+	}
+	
+	private String runProcess() {
+	    try {
 
+			Process process = processBuilder.start();
+	        StringBuilder output = new StringBuilder();
+	        BufferedReader reader = new BufferedReader(
+	                new InputStreamReader(process.getInputStream()));
+
+	        String line;
+	        while ((line = reader.readLine()) != null) {
+	            output.append(line + "\n");
+	        }
+
+	        int exitVal = process.waitFor();
+	        if (exitVal == 0) {
+	            System.out.println(output);
+	            process.destroy();
+	            return output.toString();
+	        } else {
+	        	process.destroy();
+	            return output.toString();
+	        }
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } catch (InterruptedException e) {
+	        e.printStackTrace();
+	    }
+		return "";
+	}
 	private String getBody(jakarta.servlet.http.HttpServletRequest request) throws IOException {
 		String body;
 		StringBuilder stringBuilder = new StringBuilder();

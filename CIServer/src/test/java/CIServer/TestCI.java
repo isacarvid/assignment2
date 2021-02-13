@@ -74,3 +74,33 @@ public class TestCI {
         assertTrue(returnedBody.equals(body));
     }
 }
+	@Test
+	public void testWebhookRequest() {
+		WebhookRequest webhookRequest = null;
+		try {
+			webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"test\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}}], \"ref\":\"ttttttttttttttest\"}"));
+		} catch(Exception e) {
+			assertTrue(false);
+		}
+		assertEquals("test", webhookRequest.getRepoAddress());
+		try {
+			webhookRequest = new WebhookRequest(new JSONObject("{}"));
+		} catch(Exception e) {
+			assertTrue(true);
+		}
+	}
+	
+	
+	@Test
+	public void testCompileRepo() {
+		WebhookRequest webhookRequest = null;
+		try {
+			webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"https://github.com/isacarvid/assignment2\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}}], \"ref\":\"/ref/heads/issue/8\"}"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		CIServer server = new CIServer();
+		assertTrue(server.compileRepo(webhookRequest));
+	}
+}
