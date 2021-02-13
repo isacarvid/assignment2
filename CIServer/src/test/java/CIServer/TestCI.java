@@ -41,7 +41,7 @@ public class TestCI {
     public void testWebhookRequest() {
       WebhookRequest webhookRequest = null;
       try {
-        webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"test\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}, \"message\":\"hej\"}], \"ref\":\"ttttttttttttttest\"}"));
+        webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"test\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}, \"message\":\"hej\"}],\"pusher\":{\"email\":\"test\"} ,\"ref\":\"ttttttttttttttest\"}"));
       } catch(Exception e) {
         assertTrue(false);
       }
