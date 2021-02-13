@@ -29,6 +29,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.json.JSONObject;
 
 import models.BuildStatus;
+import models.CredentialHelper;
 import models.WebhookRequest;
 
 /**
@@ -38,8 +39,11 @@ import models.WebhookRequest;
 
 public class CIServer extends AbstractHandler {
 	private ProcessBuilder processBuilder = new ProcessBuilder();
+	private CredentialHelper credentialHelper = new CredentialHelper();
 
-	public void startServer() throws Exception {
+	public void startServer(String serverEmail, String serverPassword) throws Exception {
+		credentialHelper.setServerEmail(serverEmail);
+		credentialHelper.setServerPassword(serverPassword);
 		Server server = new Server(8095);
 		server.setHandler(new CIServer());
 		server.start();
@@ -197,7 +201,7 @@ public class CIServer extends AbstractHandler {
      * @param body : information about the commit
      */
     public void sendEmail(String to, String subject, String body) throws AddressException, MessagingException {
-        final String from = "dd2480server@gmail.com";
+        final String from = credentialHelper.getServerEmail();
 
         Properties properties = new Properties();
         properties.put("mail.smtp.starttls.enable", "true");
@@ -208,7 +212,7 @@ public class CIServer extends AbstractHandler {
         Session session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(from, "Travis789!");
+                        return new PasswordAuthentication(from, credentialHelper.getServerPassword());
                     }
                 });
 
