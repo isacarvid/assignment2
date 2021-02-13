@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
 public class TestCI {
+
     @Before
     public void setUp() {
         System.out.println("setup");
@@ -33,7 +34,9 @@ public class TestCI {
 		//assertTrue(server.compileRepo(webhookRequest).isSuccessBuild());
 	}
 
-
+    /*
+     * Tests making a webhookrequest
+     */
     @Test
     public void testWebhookRequest() {
       WebhookRequest webhookRequest = null;
@@ -50,6 +53,9 @@ public class TestCI {
       }
     }
 
+    /*
+     * Tests if the testSendingEmail function sends an email
+     */
     @Test
     public void testSendingEmail() {
         CIServer server = new CIServer();
@@ -62,6 +68,9 @@ public class TestCI {
         // assert that it works by checking the email
     }
 
+    /*
+     * Checks that the email body looks as expected, based on the parameters sent in.
+     */
     @Test
     public void testCreatingEmailBody() {
         CIServer server = new CIServer();
@@ -87,4 +96,3 @@ public class TestCI {
         assertTrue(returnedBody.equals(body));
     }
 }
-
