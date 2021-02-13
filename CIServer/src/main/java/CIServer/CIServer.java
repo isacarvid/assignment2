@@ -46,7 +46,9 @@ public class CIServer extends AbstractHandler {
 		server.join();
 	}
 	
-	
+	/**
+	 *  starts server
+	 *  */
 	@Override
 	public void handle(String target, Request baseRequest, jakarta.servlet.http.HttpServletRequest request,
 			jakarta.servlet.http.HttpServletResponse response) throws IOException, jakarta.servlet.ServletException {
@@ -61,8 +63,7 @@ public class CIServer extends AbstractHandler {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
-			
-			
+
 			var status = compileRepo(webhookRequest);
 			String emailBody = createBody("isac.arvidsson97@gmail.com", webhookRequest.getBranchName(), webhookRequest.getCommitMessage(),status.isSuccessBuild(), status.isSuccessTest());
 			try {
@@ -71,14 +72,8 @@ public class CIServer extends AbstractHandler {
 				e.printStackTrace();
 			}
 		}
-		
 		// body = parseJSON(body);
 		System.out.println("\n" + baseRequest + "\n" + response);
-
-		// here you do all the continuous integration tasks
-		// for example
-		// 1st clone your repository
-		// 2nd compile the code
 		response.getWriter().println("CI job done");
 	}
 	
@@ -123,7 +118,6 @@ public class CIServer extends AbstractHandler {
 	
 	private String runProcess() {
 	    try {
-
 			Process process = processBuilder.start();
 	        StringBuilder output = new StringBuilder();
 	        BufferedReader reader = new BufferedReader(
@@ -151,6 +145,7 @@ public class CIServer extends AbstractHandler {
 	    }
 		return "";
 	}
+
 	private String getBody(jakarta.servlet.http.HttpServletRequest request) throws IOException {
 		String body;
 		StringBuilder stringBuilder = new StringBuilder();
@@ -172,7 +167,7 @@ public class CIServer extends AbstractHandler {
 		return body;
 	}
   
-  /**
+  	/**
      * Creates the body of the email notification.
      * It contains:
      * branch, commit message & version, if the code compiles, if the tests work
