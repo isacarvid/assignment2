@@ -26,7 +26,7 @@ public class TestCI {
 	public void testCompileRepo() {
 		WebhookRequest webhookRequest = null;
 		try {
-			webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"https://github.com/isacarvid/assignment1\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}}], \"ref\":\"/ref/heads/main\"}"));
+			webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"https://github.com/isacarvid/assignment1\"},\"pusher\":{\"email\":\"test\"}, \"ref\":\"/ref/heads/main\"}"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
