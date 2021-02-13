@@ -173,21 +173,21 @@ public class CIServer extends AbstractHandler {
      * branch, commit message & version, if the code compiles, if the tests work
      */
     public String createBody(String to, String branch, String commitMessage, boolean compiles, boolean tests) {
-        String body = "Hello" + " " + to + ". " + "Your commit " + commitMessage +
-                 " on branch " + branch + " has ";
+		String compileMessage = "";
+
         if(compiles && tests) {
-            body += "succeeded. The code has compiled and the tests pass.";
+			compileMessage = "succeeded. The code has compiled and the tests pass.";
+        } else if(compiles) {
+			compileMessage = "failed. The code compiles but the tests fail.";
+        } else if(tests) {
+			compileMessage = "failed. The code does not compile.";
+        } else {
+			compileMessage = "failed. The code does not compile.";
         }
-        else if(compiles) {
-            body += "failed. The code compiles but the tests fail.";
-        }
-        else if(tests) {
-            body += "failed. The code does not compile.";
-        }
-        else { // both fail, idk if possible tbh
-            body += "failed. The code does not compile.";
-        }
-        return body; // ":)";
+
+		String body = String.format("Hello %s. Your commit %s on branch %s has %s",
+				to, commitMessage, branch, compileMessage);
+		return body;
     }
 
     /**
