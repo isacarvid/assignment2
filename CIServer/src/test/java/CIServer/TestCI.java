@@ -17,21 +17,6 @@ public class TestCI {
     public void setUp() {
         System.out.println("setup");
     }
-    /*
-     * Test the function compileRepo by compiling our repo
-     */
-    @Test
-    public void testCompileRepo() {
-        WebhookRequest webhookRequest = null;
-        try {
-            webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"https://github.com/isacarvid/assignment2\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}}], \"ref\":\"/ref/heads/issue/8\"}"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        CIServer server = new CIServer();
-        assertTrue(server.compileRepo(webhookRequest));
-    }
   
     /**
 	 * Checking if a json object parses correctly
