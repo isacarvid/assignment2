@@ -22,7 +22,6 @@ Run `cd CIServer` then run `./gradlew build`.
 * Wrote `README.md` :)
 
 ### Daniel Helle
-* Co-wrote function `handle()`
 * Co-wrote class `WebhookRequest`
 * Co-wrote class `BuildStatus`
 * Co-wrote function `runProcess()`
