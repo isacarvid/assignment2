@@ -95,4 +95,5 @@ public class TestCI {
         body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message"  + " on branch " + "branchname" + " has " + "failed. The code compiles but the tests fail.";
         assertTrue(returnedBody.equals(body));
     }
+    
 }
