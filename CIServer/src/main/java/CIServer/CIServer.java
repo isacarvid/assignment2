@@ -115,7 +115,10 @@ public class CIServer extends AbstractHandler {
 
 		return buildStatus;
 	}
-	
+	/**
+	 * Executes command set in processbuilder
+	 * @return Output from process 
+	 * */
 	private String runProcess() {
 	    try {
 			Process process = processBuilder.start();
@@ -146,6 +149,10 @@ public class CIServer extends AbstractHandler {
 		return "";
 	}
 
+	/**
+	 * Parses body from http-request
+	 * @return the body 
+	 * */
 	private String getBody(jakarta.servlet.http.HttpServletRequest request) throws IOException {
 		String body;
 		StringBuilder stringBuilder = new StringBuilder();

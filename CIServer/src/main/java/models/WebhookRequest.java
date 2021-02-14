@@ -1,7 +1,9 @@
 package models;
 
 import org.json.JSONObject;
-
+/**
+ * Model class to describe webhook request form Github
+ */
 public class WebhookRequest {
 	private String emailAddress;
 	private String branchName;
@@ -16,6 +18,10 @@ public class WebhookRequest {
 		return repoName;
 	}
 
+	/**
+	 * parses jsonbody and sets class members
+	 * @param json-body
+	 */
 	public WebhookRequest(JSONObject request) throws Exception {
 		if (request.has("repository") && request.has("commits") && request.has("ref")) {
 			this.repoAddress = request.getJSONObject("repository").getString("svn_url");

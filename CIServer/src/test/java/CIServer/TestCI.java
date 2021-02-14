@@ -30,11 +30,9 @@ public class TestCI {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//CIServer server = new CIServer();
-		//assertTrue(server.compileRepo(webhookRequest).isSuccessBuild());
 	}
 
-    /*
+    /**
      * Tests making a webhookrequest
      */
     @Test

@@ -1,5 +1,7 @@
 package models;
-
+/**
+ * Model class to describe the status when compiling repository from webhook
+ * */
 public class BuildStatus {
 	private String cloneStatus;
 
@@ -45,7 +47,10 @@ public class BuildStatus {
 			successBuild = false;
 		}
 	}
-
+	
+	/**
+	 * Check in build and test status if successful
+	 */
 	public void setSuccessTest() {
 		if (cloneStatus.isEmpty() || testStatus.isEmpty() || buildStatus.isEmpty()) {
 			successTest = false;
