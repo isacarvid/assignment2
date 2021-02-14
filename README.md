@@ -14,7 +14,14 @@ Run `cd CIServer` then run `./gradlew build`.
 
 
 ### Isac Arvidsson
-
+* Co-wrote class `WebhookRequest`
+* Co-wrote class `BuildStatus`
+* Co-wrote function `runProcess()`
+* Co-wrote function `getBody()`
+* Co-wrote function `compileRepo()`
+* Co-wrote `testWebhookRequest()`
+* Co-wrote `testCompileRepo`
+* added initial class to start a server
 
 ### Eva Despinoy
 * Co-wrote function `createBody()` with corresponding tests
