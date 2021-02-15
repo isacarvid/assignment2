@@ -41,10 +41,10 @@ public class CIServer extends AbstractHandler {
 	private ProcessBuilder processBuilder = new ProcessBuilder();
 	private CredentialHelper credentialHelper = new CredentialHelper();
 
-	public void startServer(String serverEmail, String serverPassword) throws Exception {
+	public void startServer(int port, String serverEmail, String serverPassword) throws Exception {
 		credentialHelper.setServerEmail(serverEmail);
 		credentialHelper.setServerPassword(serverPassword);
-		Server server = new Server(8095);
+		Server server = new Server(port);
 		server.setHandler(new CIServer());
 		server.start();
 		server.join();
@@ -69,9 +69,9 @@ public class CIServer extends AbstractHandler {
 			} 
 
 			var status = compileRepo(webhookRequest);
-			String emailBody = createBody("isac.arvidsson97@gmail.com", webhookRequest.getBranchName(), webhookRequest.getCommitMessage(),status.isSuccessBuild(), status.isSuccessTest());
+			String emailBody = createBody(webhookRequest.getEmailAddress(), webhookRequest.getBranchName(), webhookRequest.getCommitMessage(),status.isSuccessBuild(), status.isSuccessTest());
 			try {
-				sendEmail("isac.arvidsson97@gmail.com", "test on branch: " + webhookRequest.getBranchName(), emailBody);
+				sendEmail(webhookRequest.getEmailAddress(), "test on branch: " + webhookRequest.getBranchName(), emailBody);
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}

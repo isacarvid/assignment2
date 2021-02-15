@@ -26,7 +26,7 @@ public class TestCI {
 	public void testCompileRepo() {
 		WebhookRequest webhookRequest = null;
 		try {
-			webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"https://github.com/isacarvid/assignment1\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}}], \"ref\":\"/ref/heads/main\"}"));
+			webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"https://github.com/isacarvid/assignment1\"},\"pusher\":{\"email\":\"test\"}, \"ref\":\"/ref/heads/main\"}"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -41,7 +41,7 @@ public class TestCI {
     public void testWebhookRequest() {
       WebhookRequest webhookRequest = null;
       try {
-        webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"test\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}, \"message\":\"hej\"}], \"ref\":\"ttttttttttttttest\"}"));
+        webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"test\"}, \"commits\":[{\"committer\":{\"email\":\"test\"}, \"message\":\"hej\"}],\"pusher\":{\"email\":\"test\"} ,\"ref\":\"ttttttttttttttest\"}"));
       } catch(Exception e) {
         assertTrue(false);
       }
@@ -95,4 +95,5 @@ public class TestCI {
         body = "Hello" + " " + "eva.despinoy@gmail.com" + ". " + "Your commit " + "commitMessage message"  + " on branch " + "branchname" + " has " + "failed. The code compiles but the tests fail.";
         assertTrue(returnedBody.equals(body));
     }
+    
 }
