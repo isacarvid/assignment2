@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import java.lang.Object;
 
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -18,6 +19,8 @@ import javax.mail.internet.MimeMessage;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,7 +29,9 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import models.BuildStatus;
 import models.CredentialHelper;
@@ -60,17 +65,23 @@ public class CIServer extends AbstractHandler {
 		response.setStatus(HttpServletResponse.SC_OK);
 		baseRequest.setHandled(true);
 		WebhookRequest webhookRequest = null;
+		if(request.getMethod() == "GET") {
+			
+			response.getWriter().println("hejhej");
+		}
 		if (request.getMethod() == "POST") {
+		
 			String body = getBody(request);
 			try {
 				webhookRequest = new WebhookRequest(new JSONObject(body));
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
-
+			
 			var status = compileRepo(webhookRequest);
 			String emailBody = createBody(webhookRequest.getEmailAddress(), webhookRequest.getBranchName(), webhookRequest.getCommitMessage(),status.isSuccessBuild(), status.isSuccessTest());
 			try {
+				writeToFile(status, webhookRequest);
 				sendEmail(webhookRequest.getEmailAddress(), "test on branch: " + webhookRequest.getBranchName(), emailBody);
 			} catch (MessagingException e) {
 				e.printStackTrace();
@@ -81,6 +92,53 @@ public class CIServer extends AbstractHandler {
 		response.getWriter().println("CI job done");
 	}
 	
+	/**
+	 * write json to file
+	 * @param information from build
+	 * @param information from webhook
+	 * */
+	public void writeToFile(BuildStatus build, WebhookRequest webhookRequest) {
+	    try {
+	    	JSONObject json = new JSONObject(build);
+	        File myObj = new File("history.json");
+	        if (myObj.createNewFile()) {
+		        FileWriter myWriter = new FileWriter("history.json");
+		        myWriter.write("{\"history\":[]}");
+		        myWriter.close();
+		        System.out.println("File created: " + myObj.getName());
+	        } 
+	        FileWriter myWriter = new FileWriter("history.json");
+	        JSONObject jsonObject = new JSONObject(readFromFile());
+	        json.put("branch", webhookRequest.getBranchName());
+	        json.put("message", webhookRequest.getCommitMessage());
+	        json.put("email", webhookRequest.getEmailAddress());
+	        jsonObject.getJSONArray("history").put(json);
+	        myWriter.write(jsonObject.toString(2));
+	        myWriter.close();
+	        System.out.println("Successfully wrote to the file.");
+	      } catch (IOException e) {
+	        System.out.println("An error occurred.");
+	        e.printStackTrace();
+	      }
+	}
+	
+	private String readFromFile() {
+		String data = null;
+	    try {
+	        File myObj = new File("history.json");
+	        Scanner myReader = new Scanner(myObj);
+	        while (myReader.hasNextLine()) {
+	          data += myReader.nextLine();
+	        }
+	        myReader.close();
+	      } catch (FileNotFoundException e) {
+	        System.out.println("An error occurred.");
+	        e.printStackTrace();
+	      }
+		
+		return data;
+	}
+
 	/**
 	 * clones directory from remote into temp dir.
 	 * runs gradle build and test.
