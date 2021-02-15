@@ -20,8 +20,7 @@ public class WebhookRequest {
 		if (request.has("repository") && request.has("commits") && request.has("ref")) {
 			this.repoAddress = request.getJSONObject("repository").getString("svn_url");
 			this.branchName = request.getString("ref").substring(11);
-			this.emailAddress = request.getJSONArray("commits").getJSONObject(0).getJSONObject("committer")
-					.getString("email");
+			this.emailAddress = request.getJSONObject("pusher").getString("email");
 			this.repoName = getRepoName(repoAddress);
 			this.commitMessage = request.getJSONArray("commits").getJSONObject(0).getString("message");
 		} else {
