@@ -103,9 +103,6 @@ public class CIServer extends AbstractHandler {
 	    	JSONObject json = new JSONObject(build);
 	        File myObj = new File("history.json");
 	        if (myObj.createNewFile()) {
-		        FileWriter myWriter = new FileWriter("history.json");
-		        myWriter.write("{\"history\":[]}");
-		        myWriter.close();
 		        System.out.println("File created: " + myObj.getName());
 	        } 
 	        FileWriter myWriter = new FileWriter("history.json");
@@ -123,13 +120,19 @@ public class CIServer extends AbstractHandler {
 	      }
 	}
 	
-	private String readFromFile() {
-		String data = null;
+	private String readFromFile() throws IOException {
+		String data = "";
 	    try {
 	        File myObj = new File("history.json");
 	        Scanner myReader = new Scanner(myObj);
+
 	        while (myReader.hasNextLine()) {
 	          data += myReader.nextLine();
+	        }
+	        if(data.isBlank()) {
+		        FileWriter myWriter = new FileWriter("history.json");
+		        myWriter.write("{\"history\":[]}");
+		        myWriter.close();
 	        }
 	        myReader.close();
 	      } catch (FileNotFoundException e) {
