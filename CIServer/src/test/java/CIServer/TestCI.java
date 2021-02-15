@@ -18,19 +18,6 @@ public class TestCI {
         System.out.println("setup");
     }
   
-    /**
-	 * Checking if a json object parses correctly
-	 * If not all json parameters are available throw exception 
-	 * */
-	@Test
-	public void testCompileRepo() {
-		WebhookRequest webhookRequest = null;
-		try {
-			webhookRequest = new WebhookRequest(new JSONObject("{\"repository\": {\"svn_url\": \"https://github.com/isacarvid/assignment1\"},\"pusher\":{\"email\":\"test\"}, \"ref\":\"/ref/heads/main\"}"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
     /**
      * Tests making a webhookrequest
