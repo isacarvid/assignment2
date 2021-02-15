@@ -11,7 +11,10 @@ Run `cd CIServer` then run `./gradlew build`.
 ## Statement of contribution
 
 ### Ayub Atif
-
+* Co-wrote function `createBody()` with corresponding tests
+* Co-wrote function `sendEmail()` with corresponding tests
+* Wrote class `CredentialHelper`
+* Worked on removing hard-coded sections
 
 ### Isac Arvidsson
 * Co-wrote class `WebhookRequest`
