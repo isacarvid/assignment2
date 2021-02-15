@@ -86,6 +86,7 @@ public class CIServer extends AbstractHandler {
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}
+			
 		}
 		// body = parseJSON(body);
 		System.out.println("\n" + baseRequest + "\n" + response);
