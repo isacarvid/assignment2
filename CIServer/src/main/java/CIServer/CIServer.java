@@ -129,12 +129,13 @@ public class CIServer extends AbstractHandler {
 	        while (myReader.hasNextLine()) {
 	          data += myReader.nextLine();
 	        }
+	        myReader.close();
 	        if(data.isBlank()) {
 		        FileWriter myWriter = new FileWriter("history.json");
 		        myWriter.write("{\"history\":[]}");
 		        myWriter.close();
+		        return "{\"history\":[]}";
 	        }
-	        myReader.close();
 	      } catch (FileNotFoundException e) {
 	        System.out.println("An error occurred.");
 	        e.printStackTrace();
