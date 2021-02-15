@@ -6,7 +6,7 @@ This program compiles a repository, and runs the corresponding tests.
 
 ## How to use the program? 
 In the assignment2 directory: 
-Run `cd CIServer` then run `./gradlew build`.
+Run `cd CIServer`, then `./gradlew build` and lastly `./gradlew run --args='portnr', 'server-email', 'server-password'`
 
 ## Statement of contribution
 
