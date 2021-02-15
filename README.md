@@ -2,7 +2,7 @@
 By Ayub Atif, Isac Arvidsson, Eva Despinoy, Daniel Helle
 
 ## Description of the program
-This program compiles a repository, and runs the corresponding tests. 
+This program listens for changes to the repository, compiles the project, runs the corresponding tests, and notifies the contributor of the test results via an email. 
 
 ## How to use the program? 
 In the assignment2 directory: 
