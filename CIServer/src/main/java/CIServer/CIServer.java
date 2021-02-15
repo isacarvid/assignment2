@@ -81,6 +81,7 @@ public class CIServer extends AbstractHandler {
 			var status = compileRepo(webhookRequest);
 			String emailBody = createBody(webhookRequest.getEmailAddress(), webhookRequest.getBranchName(), webhookRequest.getCommitMessage(),status.isSuccessBuild(), status.isSuccessTest());
 			try {
+				System.out.println("hej");
 				writeToFile(status, webhookRequest);
 				sendEmail(webhookRequest.getEmailAddress(), "test on branch: " + webhookRequest.getBranchName(), emailBody);
 			} catch (MessagingException e) {
