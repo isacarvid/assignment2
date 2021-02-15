@@ -78,6 +78,7 @@ public class CIServer extends AbstractHandler {
 				e.printStackTrace();
 			} 
 			System.out.println("hej");
+			
 			var status = compileRepo(webhookRequest);
 			System.out.println("hej");
 
