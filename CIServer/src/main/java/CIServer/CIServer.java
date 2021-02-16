@@ -30,6 +30,7 @@ import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -66,8 +67,7 @@ public class CIServer extends AbstractHandler {
 		baseRequest.setHandled(true);
 		WebhookRequest webhookRequest = null;
 		if(request.getMethod() == "GET") {
-			
-			response.getWriter().println("hejhej");
+			printBuildHistory(response);
 		}
 		if (request.getMethod() == "POST") {
 		
@@ -77,11 +77,8 @@ public class CIServer extends AbstractHandler {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
-			System.out.println("hej");
-			
 			var status = compileRepo(webhookRequest);
-			System.out.println("hej");
-
+			
 			String emailBody = createBody(webhookRequest.getEmailAddress(), webhookRequest.getBranchName(), webhookRequest.getCommitMessage(),status.isSuccessBuild(), status.isSuccessTest());
 			try {
 				writeToFile(status, webhookRequest);
@@ -96,6 +93,33 @@ public class CIServer extends AbstractHandler {
 		response.getWriter().println("CI job done");
 	}
 	
+	private void printBuildHistory(jakarta.servlet.http.HttpServletResponse response) throws JSONException, IOException {
+		response.getWriter().println("buildHistory");
+		JSONObject jsonObject = new JSONObject(readFromFile());
+		JSONArray history = jsonObject.getJSONArray("history");
+		for(int i = 0; i < history.length(); i++) {
+			response.getWriter().println("<h2> ------------Build-----------</h2>");
+			response.getWriter().println(history.getJSONObject(i).getString("branch"));
+			response.getWriter().println("<p> commit made by: " + history.getJSONObject(i).getString("email") + "</p>");
+			response.getWriter().println("<p> commit with message: " + history.getJSONObject(i).getString("message") + "</p>");
+			response.getWriter().println("<p>output from build: " + history.getJSONObject(i).getString("buildStatus") + "</p>");
+			if(history.getJSONObject(i).getBoolean("successBuild")) {
+				response.getWriter().println("<p>  build was: successful" + "<p>");
+			} else {
+				response.getWriter().println("<p> build was: failed </p>");
+			}
+			response.getWriter().println("<p>output from test: " + history.getJSONObject(i).getString("testStatus") + "</p>");
+
+			if(history.getJSONObject(i).getBoolean("successTest")) {
+				response.getWriter().println("<p>test was: successful</p>");
+			} else {
+				response.getWriter().println("<p>test was: failed</p>");
+			}
+		}
+		
+		
+	}
+
 	/**
 	 * write json to file
 	 * @param information from build
