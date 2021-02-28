@@ -14,7 +14,7 @@ Run `cd CIServer`, then `./gradlew build` and lastly `./gradlew run --args='port
 * Co-wrote function `createBody()` with corresponding tests
 * Co-wrote function `sendEmail()` with corresponding tests
 * Wrote class `CredentialHelper`
-* Worked on removing hard-coded sections
+* Worked on replacing hard-coded sections
 
 ### Isac Arvidsson
 * Co-wrote class `WebhookRequest`
